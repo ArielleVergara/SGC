@@ -10,16 +10,79 @@
 <div class="login-container">
     <div class="login-card">
         <img src="{{ url_for('static', filename='img/logoPlantaCalma.png') }}" class="logo">
-
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                {% for category, message in messages %}
+                <div class="alert {{ category }}">
+                    {{ message }}
+                </div>
+                {% endfor %}
+            {% endif %}
+        {% endwith %}
         <h2>Iniciar Sesión</h2>
 
-        <form method="POST">
-            <input type="email" name="email" placeholder="Correo electrónico" required>
-            <input type="password" name="password" placeholder="Contraseña" required>
-            <button type="submit">Ingresar</button>
+        <form id="loginForm" method="POST">
+            <div class="input-group">
+                <input type="email" id="email" name="email" placeholder="Correo electrónico">
+                <small id="email-error" class="live-error"></small>
+            </div>
+            <div class="input-group">
+                <input type="password" id="password" name="password" placeholder="Contraseña">
+                <small id="password-error" class="live-error"></small>
+            </div>
+            <button type="submit">Iniciar sesión</button>
         </form>
+        <p id="error-message" class="frontend-error"></p>
     </div>
 </div>
+
+<script>
+const emailInput = document.getElementById("email");
+const passwordInput = document.getElementById("password");
+
+const emailError = document.getElementById("email-error");
+const passwordError = document.getElementById("password-error");
+
+const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+// Validación email en tiempo real
+emailInput.addEventListener("input", function() {
+
+    emailInput.classList.remove("input-error", "input-success");
+
+    if (emailInput.value.trim() === "") {
+        emailError.textContent = "El correo es obligatorio.";
+        emailInput.classList.add("input-error");
+    } 
+    else if (!emailRegex.test(emailInput.value)) {
+        emailError.textContent = "Formato de correo inválido.";
+        emailInput.classList.add("input-error");
+    } 
+    else {
+        emailError.textContent = "";
+        emailInput.classList.add("input-success");
+    }
+});
+
+// Validación contraseña en tiempo real
+passwordInput.addEventListener("input", function() {
+
+    passwordInput.classList.remove("input-error", "input-success");
+
+    if (passwordInput.value.trim() === "") {
+        passwordError.textContent = "La contraseña es obligatoria.";
+        passwordInput.classList.add("input-error");
+    } 
+    else if (passwordInput.value.length < 4) {
+        passwordError.textContent = "Debe tener al menos 4 caracteres.";
+        passwordInput.classList.add("input-error");
+    } 
+    else {
+        passwordError.textContent = "";
+        passwordInput.classList.add("input-success");
+    }
+});
+</script>
 
 </body>
 </html>

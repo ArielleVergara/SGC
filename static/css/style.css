@@ -83,6 +83,52 @@ body::before {
     font-size: 14px;
 }
 
+form {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.live-error {
+    font-size: 10px;
+    height: 12px;
+    margin-top: 2px;
+    line-height: 14px;
+    color: #FFAA85;
+}
+
+.input-group {
+    display: flex;
+    flex-direction: column;
+}
+
+.live-error {
+    font-size: 11px;
+    height: 12px;
+    line-height: 12px;
+    margin-top: 2px;
+    color: #FFAA85;
+}
+
+.input-success {
+    border: 2px solid #C0E0C0;
+    background-color: #F4FFF4;
+}
+
+.alert {
+    padding: 10px;
+    margin-bottom: 15px;
+    border-radius: 8px;
+    font-size: 14px;
+    text-align: center;
+}
+
+.alert.error {
+    background-color: #FFD8C8;
+    color: #A487C3;
+    border: 1px solid #FFAA85;
+}
+
 .login-card form {
     width: 100%;
     display: flex;

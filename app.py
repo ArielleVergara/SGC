@@ -1,4 +1,4 @@
-from flask import Flask, render_template, request, redirect, session
+from flask import Flask, render_template, request, redirect, session, flash
 from flask_bcrypt import Bcrypt
 from functools import wraps
 from db import get_connection
@@ -6,6 +6,8 @@ from db import get_connection
 app = Flask(__name__)
 app.secret_key = "clave_super_secreta"
 bcrypt = Bcrypt(app)
+
+app.secret_key = "clave_super_secreta"
 
 @app.route("/")
 def home():
@@ -44,10 +46,10 @@ def login():
             session["user_id"] = user[0]
             session["tienda_id"] = user[2]
             session["rol"] = user[3]
-
             return redirect("/dashboard")
 
-        return "Credenciales incorrectas ❌"
+        flash("Correo o contraseña incorrectos", "error")
+        return redirect("/login")
 
     return render_template("login.html")
 
