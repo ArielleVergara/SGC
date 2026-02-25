@@ -1,7 +1,7 @@
 import psycopg2
 
-try:
-    def get_connection():
+def get_connection():
+    try:
         conn = psycopg2.connect(
             host="localhost",
             database="GC_PlantaCalma",
@@ -9,9 +9,8 @@ try:
             password="1234",
             port="5432"
         )
-        print("Conexión exitosa 🎉")
-        conn.close()
-
-except psycopg2.OperationalError as e:
-    print("Error de conexión:")
-    print(e)
+        return conn
+    except Exception as e:
+        print("Error conectando a la base de datos:")
+        print(e)
+        return None

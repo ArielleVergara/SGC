@@ -13,8 +13,10 @@ DROP TABLE IF EXISTS tiendas CASCADE;
 CREATE TABLE tiendas (
     id SERIAL PRIMARY KEY,
     nombre VARCHAR(150) NOT NULL,
-    direccion TEXT,
-    telefono VARCHAR(50),
+    dominio VARCHAR(150) UNIQUE,
+    color_primario VARCHAR(7),
+    color_secundario VARCHAR(7),
+    logo_url TEXT,
     activo BOOLEAN DEFAULT TRUE,
     creado_en TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
@@ -22,18 +24,21 @@ CREATE TABLE tiendas (
 -- USUARIOS
 CREATE TABLE usuarios (
     id SERIAL PRIMARY KEY,
-    tienda_id INT NOT NULL REFERENCES tiendas(id),
+    tienda_id INT NOT NULL REFERENCES tiendas(id) ON DELETE CASCADE,
     nombre VARCHAR(150) NOT NULL,
-    email VARCHAR(150) UNIQUE NOT NULL,
+    email VARCHAR(150) NOT NULL,
     password_hash TEXT NOT NULL,
-    rol VARCHAR(50) NOT NULL CHECK (rol IN ('admin','vendedor')),
+    rol VARCHAR(50) CHECK (rol IN ('admin','vendedor')),
     activo BOOLEAN DEFAULT TRUE,
-    creado_en TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+    creado_en TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+
+    UNIQUE(tienda_id, email)
 );
 
 -- CLIENTES
 CREATE TABLE clientes (
     id SERIAL PRIMARY KEY,
+    tienda_id INT NOT NULL REFERENCES tiendas(id) ON DELETE CASCADE,
     nombre VARCHAR(150) NOT NULL,
     email VARCHAR(150),
     telefono VARCHAR(50),
@@ -44,15 +49,19 @@ CREATE TABLE clientes (
 -- CATEGORIAS
 CREATE TABLE categorias (
     id SERIAL PRIMARY KEY,
-    nombre VARCHAR(150) NOT NULL UNIQUE,
+    tienda_id INT NOT NULL REFERENCES tiendas(id) ON DELETE CASCADE,
+    nombre VARCHAR(150) NOT NULL,
     descripcion TEXT,
-    activo BOOLEAN DEFAULT TRUE
+    activo BOOLEAN DEFAULT TRUE,
+
+    UNIQUE(tienda_id, nombre)
 );
 
 -- PRODUCTOS
 CREATE TABLE productos (
     id SERIAL PRIMARY KEY,
-    categoria_id INT NOT NULL REFERENCES categorias(id),
+    tienda_id INT NOT NULL REFERENCES tiendas(id) ON DELETE CASCADE,
+    categoria_id INT REFERENCES categorias(id),
     nombre VARCHAR(150) NOT NULL,
     descripcion TEXT,
     activo BOOLEAN DEFAULT TRUE,
@@ -66,13 +75,15 @@ CREATE INDEX idx_productos_categoria ON productos(categoria_id);
 CREATE TABLE variantes_producto (
     id SERIAL PRIMARY KEY,
     producto_id INT NOT NULL REFERENCES productos(id) ON DELETE CASCADE,
-    sku VARCHAR(100) UNIQUE NOT NULL,
+    sku VARCHAR(100) NOT NULL,
     atributo_1 VARCHAR(100),
     atributo_2 VARCHAR(100),
     precio NUMERIC(10,2) NOT NULL CHECK (precio >= 0),
     stock INT NOT NULL DEFAULT 0 CHECK (stock >= 0),
     activo BOOLEAN DEFAULT TRUE,
-    creado_en TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+    creado_en TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+
+    UNIQUE(producto_id, sku)
 );
 
 CREATE INDEX idx_variantes_producto_id ON variantes_producto(producto_id);
@@ -80,11 +91,13 @@ CREATE INDEX idx_variantes_producto_id ON variantes_producto(producto_id);
 -- DESCUENTOS
 CREATE TABLE descuentos (
     id SERIAL PRIMARY KEY,
+    tienda_id INT NOT NULL REFERENCES tiendas(id) ON DELETE CASCADE,
     nombre VARCHAR(150) NOT NULL,
-    porcentaje NUMERIC(5,2) CHECK (porcentaje >= 0 AND porcentaje <= 100),
-    monto_fijo NUMERIC(10,2) CHECK (monto_fijo >= 0),
+    porcentaje NUMERIC(5,2),
+    monto_fijo NUMERIC(10,2),
     activo BOOLEAN DEFAULT TRUE,
     creado_en TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+
     CHECK (
         (porcentaje IS NOT NULL AND monto_fijo IS NULL)
         OR
@@ -95,7 +108,7 @@ CREATE TABLE descuentos (
 -- VENTAS
 CREATE TABLE ventas (
     id SERIAL PRIMARY KEY,
-    tienda_id INT NOT NULL REFERENCES tiendas(id),
+    tienda_id INT NOT NULL REFERENCES tiendas(id) ON DELETE CASCADE,
     usuario_id INT NOT NULL REFERENCES usuarios(id),
     cliente_id INT REFERENCES clientes(id),
     descuento_id INT REFERENCES descuentos(id),
