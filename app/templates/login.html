@@ -27,7 +27,22 @@
                 <small id="email-error" class="live-error"></small>
             </div>
             <div class="input-group">
-                <input type="password" id="password" name="password" placeholder="Contraseña">
+                <div class="password-container">
+                    <input type="password" id="password" name="password" placeholder="Contraseña">
+                    <button type="button" id="togglePassword" class="toggle-btn">
+                        <svg id="eyeIcon" xmlns="http://www.w3.org/2000/svg" 
+                            width="20" height="20" 
+                            fill="none" 
+                            stroke="#A487C3" 
+                            stroke-width="2" 
+                            stroke-linecap="round" 
+                            stroke-linejoin="round" 
+                            viewBox="0 0 24 24">
+                            <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/>
+                            <circle cx="12" cy="12" r="3"/>
+                        </svg>
+                    </button>
+                </div>
                 <small id="password-error" class="live-error"></small>
             </div>
             <button type="submit">Iniciar sesión</button>
@@ -37,6 +52,10 @@
 </div>
 
 <script>
+
+
+// Validaciones
+
 const emailInput = document.getElementById("email");
 const passwordInput = document.getElementById("password");
 
@@ -45,9 +64,8 @@ const passwordError = document.getElementById("password-error");
 
 const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
-// Validación email en tiempo real
+// Validación email
 emailInput.addEventListener("input", function() {
-
     emailInput.classList.remove("input-error", "input-success");
 
     if (emailInput.value.trim() === "") {
@@ -64,9 +82,8 @@ emailInput.addEventListener("input", function() {
     }
 });
 
-// Validación contraseña en tiempo real
+// Validación contraseña
 passwordInput.addEventListener("input", function() {
-
     passwordInput.classList.remove("input-error", "input-success");
 
     if (passwordInput.value.trim() === "") {
@@ -82,6 +99,22 @@ passwordInput.addEventListener("input", function() {
         passwordInput.classList.add("input-success");
     }
 });
+
+// Mostrar/ocultar contraseña
+const togglePassword = document.getElementById("togglePassword");
+const eyeIcon = document.getElementById("eyeIcon");
+
+togglePassword.addEventListener("click", function() {
+
+    const isPassword = passwordInput.type === "password";
+
+    passwordInput.type = isPassword ? "text" : "password";
+
+    eyeIcon.innerHTML = isPassword
+        ? '<path d="M17.94 17.94A10.9 10.9 0 0112 20c-7 0-11-8-11-8a21.77 21.77 0 015.17-5.94M9.9 4.24A10.94 10.94 0 0112 4c7 0 11 8 11 8a21.86 21.86 0 01-2.06 3.19M1 1l22 22"/>'
+        : '<path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/>';
+});
+
 </script>
 
 </body>

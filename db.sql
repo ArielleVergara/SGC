@@ -14,8 +14,6 @@ CREATE TABLE tiendas (
     id SERIAL PRIMARY KEY,
     nombre VARCHAR(150) NOT NULL,
     dominio VARCHAR(150) UNIQUE,
-    color_primario VARCHAR(7),
-    color_secundario VARCHAR(7),
     logo_url TEXT,
     activo BOOLEAN DEFAULT TRUE,
     creado_en TIMESTAMP DEFAULT CURRENT_TIMESTAMP

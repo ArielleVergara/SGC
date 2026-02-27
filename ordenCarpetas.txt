@@ -1,0 +1,50 @@
+gestion_comercial/
+│
+├── app/
+│   │
+│   ├── __init__.py
+│   │
+│   ├── config.py
+│   │
+│   ├── routes/
+│   │   ├── auth_routes.py
+│   │   ├── producto_routes.py
+│   │   ├── venta_routes.py
+│   │   └── cliente_routes.py
+│   │
+│   ├── services/
+│   │   ├── auth_service.py
+│   │   ├── producto_service.py
+│   │   ├── venta_service.py
+│   │   └── cliente_service.py
+│   │
+│   ├── repositories/
+│   │   ├── usuario_repository.py
+│   │   ├── producto_repository.py
+│   │   ├── venta_repository.py
+│   │   └── cliente_repository.py
+│   │
+│   ├── models/
+│   │   ├── usuario.py
+│   │   ├── producto.py
+│   │   ├── venta.py
+│   │   └── cliente.py
+│   │
+│   ├── templates/
+│   │   ├── base.html
+│   │   ├── login.html
+│   │   ├── dashboard.html
+│   │   ├── productos.html
+│   │   └── ventas.html
+│   │
+│   └── static/
+│       ├── css/
+│       │   └── styles.css
+│       ├── js/
+│       │   └── login.js
+│       └── images/
+│           └── logo.png
+│
+├── run.py
+├── requirements.txt
+└── README.md
