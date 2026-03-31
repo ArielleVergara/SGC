@@ -1,0 +1,49 @@
+.dashboard-container {
+    position: relative;
+    height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.dashboard-card {
+    background: rgba(255, 255, 255, 0.5);
+    backdrop-filter: blur(12px);
+    
+    padding: 30px;
+    border-radius: 20px;
+
+    box-shadow: 
+        0 8px 25px rgba(0,0,0,0.15),
+        0 0 0 1px rgba(255,255,255,0.3);
+}
+
+.menu {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 25px;
+}
+
+.menu button {
+    height: 100px;
+    background: #f4f7f5;
+    border: none;
+    transition: 0.3s ease;
+}
+
+.menu button:hover {
+    transform: translateY(-5px);
+    background: #e0f2f1;
+}
+
+.menu i {
+    width: 32px;
+    height: 32px;
+    color: #2e7d32;
+}
+
+.menu p {
+    margin: 0;
+    font-size: 14px;
+    font-weight: 500;
+}

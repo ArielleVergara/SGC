@@ -3,10 +3,10 @@
 <head>
     <meta charset="UTF-8">
     <title>Inicio de Sesión</title>
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/base.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/login.css') }}">
 </head>
-<body>
-
+<body class="overlay">
 <div class="login-container">
     <div class="login-card">
         <img src="{{ url_for('static', filename='img/logoPlantaCalma.png') }}" class="logo">
@@ -21,7 +21,7 @@
         {% endwith %}
         <h2>Iniciar Sesión</h2>
 
-        <form id="loginForm" method="POST">
+        <form id="loginForm" method="POST" action="/login">
             <div class="input-group">
                 <input type="email" id="email" name="email" placeholder="Correo electrónico">
                 <small id="email-error" class="live-error"></small>

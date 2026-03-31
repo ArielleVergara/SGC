@@ -1,0 +1,158 @@
+* {
+    box-sizing: border-box;
+}
+
+body.overlay::before {
+    content: "";
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.6);
+}
+
+body {
+    margin: 0;
+    font-family: 'Segoe UI', sans-serif;
+
+    background: linear-gradient(
+        135deg,
+        #C0E0C0 0%,
+        #DCCEEE 35%,
+        #FFD8C8 70%,
+        #A487C3 100%
+    );
+
+    height: 100vh;
+}
+
+h1 {
+    margin-bottom: 20px;
+    color: #2e7d32;
+}
+
+/* Animaciones globales */
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(-10px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+/* Alertas reutilizables */
+.alert {
+    padding: 10px;
+    margin-bottom: 15px;
+    border-radius: 8px;
+    font-size: 14px;
+    text-align: center;
+}
+
+.alert.error {
+    background-color: #FFD8C8;
+    color: #A487C3;
+    border: 1px solid #FFAA85;
+}
+
+/* Inputs base */
+input {
+    border-radius: 8px;
+    font-size: 14px;
+}
+
+/* Botones base */
+button {
+    border-radius: 8px;
+    font-size: 14px;
+    cursor: pointer;
+}
+
+.app-container {
+    display: flex;
+    height: 100vh;
+}
+
+/* Sidebar */
+.sidebar {
+    width: 240px;
+    background: rgba(46, 125, 50, 0.85);
+    backdrop-filter: blur(12px);
+    padding: 20px;
+    color: white;
+    display: flex;
+    flex-direction: column;
+}
+
+.sidebar-menu {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.sidebar-menu i {
+    width: 20px;
+    height: 20px;
+}
+
+.sidebar-top {
+    display: flex;
+    justify-content: center;
+}
+
+.sidebar-bottom {
+    margin-top: auto;
+}
+
+.sidebar-bottom a {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 10px 14px;
+    border-radius: 12px;
+    color: #FFD8C8;
+}
+
+.sidebar-bottom a:hover {
+    background: rgba(255, 0, 0, 0.2);
+}
+
+.sidebar h2 {
+    margin-bottom: 20px;
+}
+
+.sidebar a {
+    text-decoration: none;
+    color: inherit;
+}
+
+.sidebar-menu a {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 10px 14px;
+    border-radius: 12px;
+    text-decoration: none;
+    color: white;
+    transition: all 0.25s ease;
+}
+
+.sidebar-menu a:hover {
+    background: rgba(255,255,255,0.2);
+    transform: translateX(5px);
+}
+
+.sidebar-menu a.active {
+    background: rgba(255,255,255,0.3);
+    font-weight: 600;
+}
+
+.sidebar-logo {
+    width: 140px;
+    margin-bottom: 25px;
+}
+
+/* Contenido */
+.main-content {
+    flex: 1;
+    padding: 40px;
+    background: rgba(255, 255, 255, 0.35);
+    backdrop-filter: blur(10px);
+    border-radius: 20px;
+    margin: 20px;
+}

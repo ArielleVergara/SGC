@@ -1,0 +1,58 @@
+{% extends "base.html" %}
+
+{% block title %}Dashboard{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/dashboard.css') }}">
+{% endblock %}
+
+{% block content %}
+
+<h1>🌿 Panel de Gestión</h1>
+
+<div class="dashboard-card">
+    <div class="menu">
+
+        <button onclick="irA('inventario')">
+            <i data-lucide="package"></i>
+            <p>Inventario</p>
+        </button>
+
+        <button onclick="irA('clientes')">
+            <i data-lucide="users"></i>
+            <p>Clientes</p>
+        </button>
+
+        <button onclick="irA('trabajadores')">
+            <i data-lucide="briefcase"></i>
+            <p>Trabajadores</p>
+        </button>
+
+        <button onclick="irA('ventas')">
+            <i data-lucide="shopping-cart"></i>
+            <p>Ventas</p>
+        </button>
+
+        <button onclick="irA('plantas')">
+            <i data-lucide="leaf"></i>
+            <p>Plantas</p>
+        </button>
+
+        <button onclick="irA('reportes')">
+            <i data-lucide="bar-chart"></i>
+            <p>Reportes</p>
+        </button>
+
+    </div>
+</div>
+
+<script src="https://unpkg.com/lucide@latest"></script>
+<script>
+    lucide.createIcons();
+
+    function irA(seccion) {
+        window.location.href = "/" + seccion;
+    }
+</script>
+
+{% endblock %}

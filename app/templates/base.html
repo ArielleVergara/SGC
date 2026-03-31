@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>{% block title %}PlantaCalma{% endblock %}</title>
+
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/base.css') }}">
+
+    {% block extra_css %}{% endblock %}
+</head>
+<body>
+    <div class="app-container">
+        <aside class="sidebar">
+
+            <div class="sidebar-top">
+                <img src="{{ url_for('static', filename='img/logoPlantaCalma.png') }}" class="sidebar-logo">
+            </div>
+            <nav class="sidebar-menu">
+                <a href="/dashboard" class="{% if request.path == '/dashboard' %}active{% endif %}">
+                    <i data-lucide="home"></i>
+                    <span>Dashboard</span>
+                </a>
+
+                <a href="/inventario" class="{% if request.path == '/inventario' %}active{% endif %}">
+                    <i data-lucide="package"></i>
+                    <span>Inventario</span>
+                </a>
+
+                <a href="/clientes" class="{% if request.path == '/clientes' %}active{% endif %}">
+                    <i data-lucide="users"></i>
+                    <span>Clientes</span>
+                </a>
+
+                <a href="/trabajadores" class="{% if request.path == '/trabajadores' %}active{% endif %}">
+                    <i data-lucide="briefcase"></i>
+                    <span>Trabajadores</span>
+                </a>
+
+                <a href="/ventas" class="{% if request.path == '/ventas' %}active{% endif %}">
+                    <i data-lucide="shopping-cart"></i>
+                    <span>Ventas</span>
+                </a>
+
+                <a href="/plantas" class="{% if request.path == '/plantas' %}active{% endif %}">
+                    <i data-lucide="leaf"></i>
+                    <span>Plantas</span>
+                </a>
+
+                <a href="/reportes" class="{% if request.path == '/reportes' %}active{% endif %}">
+                    <i data-lucide="bar-chart"></i>
+                    <span>Reportes</span>
+                </a>
+            </nav>
+
+            <div class="sidebar-bottom">
+                <a href="/logout" class="logout">
+                    <i data-lucide="log-out"></i>
+                    <span>Cerrar sesión</span>
+                </a>
+            </div>
+
+        </aside>
+
+        <!-- Contenido dinámico -->
+        <main class="main-content">
+            {% block content %}
+            {% endblock %}
+        </main>
+
+    </div>
+
+    {% block extra_js %}{% endblock %}
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <script>
+        lucide.createIcons();
+    </script>
+</body>
+</html>

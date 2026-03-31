@@ -6,6 +6,9 @@ def create_app():
 
     # Rutas
     from app.routes.auth_routes import auth_bp
+    from app.routes.dashboard_routes import dashboard_bp
+    
     app.register_blueprint(auth_bp)
+    app.register_blueprint(dashboard_bp)
 
     return app
