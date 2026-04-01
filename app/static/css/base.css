@@ -71,6 +71,7 @@ button {
 /* Sidebar */
 .sidebar {
     width: 240px;
+    transition: width 0.3s ease;
     background: rgba(46, 125, 50, 0.85);
     backdrop-filter: blur(12px);
     padding: 20px;
@@ -79,37 +80,75 @@ button {
     flex-direction: column;
 }
 
+.sidebar {
+    position: relative;
+    z-index: 10;
+    width: 80px;
+    transition: width 0.3s ease;
+    overflow: hidden;
+}
+
+.sidebar.expanded {
+    width: 240px;
+}
+
 .sidebar-menu {
     display: flex;
     flex-direction: column;
-    gap: 8px;
+    gap: 10px;
+    margin-top: 20px;
 }
 
 .sidebar-menu i {
-    width: 20px;
-    height: 20px;
+    width: 22px;
+    height: 22px;
+    flex-shrink: 0;
 }
 
 .sidebar-top {
     display: flex;
     justify-content: center;
+    align-items: center;
+    margin-bottom: 20px;
 }
 
 .sidebar-bottom {
     margin-top: auto;
+    border-top: 1px solid rgba(255,255,255,0.2);
+    padding-top: 10px;
 }
 
 .sidebar-bottom a {
+    position: relative;
     display: flex;
     align-items: center;
-    gap: 10px;
-    padding: 10px 14px;
+    gap: 12px;
+    padding: 10px;
     border-radius: 12px;
     color: #FFD8C8;
+    text-decoration: none;
+    transition: 0.3s;
 }
 
 .sidebar-bottom a:hover {
     background: rgba(255, 0, 0, 0.2);
+    transform: translateX(5px);
+}
+
+.sidebar:not(.expanded) .sidebar-bottom a {
+    justify-content: center;
+    padding: 10px 0;
+}
+
+.sidebar.expanded .sidebar-bottom a {
+    justify-content: flex-start;
+    padding: 10px;
+}
+
+.sidebar-bottom i {
+    width: 22px;
+    height: 22px;
+    flex-shrink: 0;
 }
 
 .sidebar h2 {
@@ -122,19 +161,24 @@ button {
 }
 
 .sidebar-menu a {
+    position: relative;
     display: flex;
     align-items: center;
-    gap: 12px;
-    padding: 10px 14px;
+    gap: 0px;
+    padding: 10px;
     border-radius: 12px;
-    text-decoration: none;
     color: white;
+    text-decoration: none;
+    transition: 0.3s;
+    justify-content: flex-start;
     transition: all 0.25s ease;
+    min-height: 42px;
+    width: 100%;
 }
 
 .sidebar-menu a:hover {
     background: rgba(255,255,255,0.2);
-    transform: translateX(5px);
+    transform: translateX(3px);
 }
 
 .sidebar-menu a.active {
@@ -142,9 +186,120 @@ button {
     font-weight: 600;
 }
 
-.sidebar-logo {
-    width: 140px;
-    margin-bottom: 25px;
+.sidebar.expanded .sidebar-menu a {
+    justify-content: flex-start;
+    align-items: center;
+    padding: 10px;
+}
+
+.sidebar:not(.expanded) .sidebar-menu a {
+    padding: 10px 0;
+    justify-content: center;
+}
+
+.sidebar:not(.expanded) .sidebar-menu a.active {
+    justify-content: center;
+}
+
+.sidebar-menu i {
+    transition: transform 0.25s ease;
+    width: 22px;
+    height: 22px;
+    flex-shrink: 0;
+}
+
+.sidebar.expanded .sidebar-menu a:hover i {
+    transform: scale(1.1);
+}
+
+.sidebar:not(.expanded) .sidebar-menu a i {
+    margin: 0 auto;
+}
+
+.link-text {
+    opacity: 0;
+    transform: translateX(-10px);
+    transition: all 0.25s ease;
+    white-space: nowrap;
+    display: inline-block;
+    width: 0;
+    overflow: hidden;
+}
+
+.sidebar.expanded .link-text {
+    opacity: 1;
+    transform: translateX(0);
+    width: auto;
+    margin-left: 8px;
+}
+
+/* Tooltip */
+.tooltip-text {
+    position: absolute;
+    left: 90%;
+    top: 50%;
+    transform: translateY(-50%);
+    background: #333;
+    color: white;
+    padding: 5px 10px;
+    border-radius: 6px;
+    font-size: 12px;
+    white-space: nowrap;
+    opacity: 0;
+    pointer-events: none;
+    transition: 0.2s;
+    z-index: 999;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+}
+
+.sidebar:not(.expanded) a:hover .tooltip-text {
+    opacity: 1; 
+}
+
+.user-info {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 10px;
+    border-radius: 12px;
+    transition: 0.3s;
+}
+
+.user-avatar {
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    background: rgba(255,255,255,0.3);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: bold;
+}
+
+.user-avatar i {
+    width: 18px;
+    height: 18px;
+}
+
+.user-info:hover .user-avatar {
+    background: rgba(255,255,255,0.3);
+}
+
+.user-name {
+    white-space: nowrap;
+    font-size: 14px;
+}
+
+.user-info:hover {
+    background: rgba(255,255,255,0.2);
+}
+
+.sidebar:not(.expanded) .user-text {
+    display: none;
+}
+
+.sidebar:not(.expanded) .user-info {
+    justify-content: center;
 }
 
 /* Contenido */
@@ -155,4 +310,5 @@ button {
     backdrop-filter: blur(10px);
     border-radius: 20px;
     margin: 20px;
+    overflow: visible;
 }

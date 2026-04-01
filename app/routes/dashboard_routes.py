@@ -8,4 +8,4 @@ dashboard_bp = Blueprint("dashboard", __name__)
 def dashboard():
     if "usuario" not in session:
         return redirect("/login")
-    return render_template("dashboard.html")
+    return render_template("dashboard.html", usuario=session["usuario"])

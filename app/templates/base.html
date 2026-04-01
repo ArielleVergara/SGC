@@ -10,58 +10,63 @@
 </head>
 <body>
     <div class="app-container">
-        <aside class="sidebar">
-
+        <aside class="sidebar" id="sidebar">
             <div class="sidebar-top">
-                <img src="{{ url_for('static', filename='img/logoPlantaCalma.png') }}" class="sidebar-logo">
+                <div class="user-info">
+                    <div class="user-avatar">
+                        <i data-lucide="user"></i>
+                    </div>
+                    <div class="user-text">
+                        <span class="user-name">{{ usuario["nombre"] }}</span>
+                    </div>
+                </div>
             </div>
             <nav class="sidebar-menu">
                 <a href="/dashboard" class="{% if request.path == '/dashboard' %}active{% endif %}">
                     <i data-lucide="home"></i>
-                    <span>Dashboard</span>
+                    <span class="link-text">Dashboard</span>
+                    <span class="tooltip-text">Dashboard</span>
                 </a>
-
                 <a href="/inventario" class="{% if request.path == '/inventario' %}active{% endif %}">
                     <i data-lucide="package"></i>
-                    <span>Inventario</span>
+                    <span class="link-text">Inventario</span>
+                    <span class="tooltip-text">Inventario</span>
                 </a>
-
                 <a href="/clientes" class="{% if request.path == '/clientes' %}active{% endif %}">
                     <i data-lucide="users"></i>
-                    <span>Clientes</span>
+                    <span class="link-text">Clientes</span>
+                    <span class="tooltip-text">Clientes</span>
                 </a>
-
                 <a href="/trabajadores" class="{% if request.path == '/trabajadores' %}active{% endif %}">
                     <i data-lucide="briefcase"></i>
-                    <span>Trabajadores</span>
+                    <span class="link-text">Trabajadores</span>
+                    <span class="tooltip-text">Trabajadores</span>
                 </a>
-
                 <a href="/ventas" class="{% if request.path == '/ventas' %}active{% endif %}">
                     <i data-lucide="shopping-cart"></i>
-                    <span>Ventas</span>
+                    <span class="link-text">Ventas</span>
+                    <span class="tooltip-text">Ventas</span>
                 </a>
-
                 <a href="/plantas" class="{% if request.path == '/plantas' %}active{% endif %}">
                     <i data-lucide="leaf"></i>
-                    <span>Plantas</span>
+                    <span class="link-text">Plantas</span>
+                    <span class="tooltip-text">Plantas</span>
                 </a>
-
                 <a href="/reportes" class="{% if request.path == '/reportes' %}active{% endif %}">
                     <i data-lucide="bar-chart"></i>
-                    <span>Reportes</span>
+                    <span class="link-text">Reportes</span>
+                    <span class="tooltip-text">Reportes</span>
                 </a>
             </nav>
-
             <div class="sidebar-bottom">
-                <a href="/logout" class="logout">
+                <a href="/logout">
                     <i data-lucide="log-out"></i>
-                    <span>Cerrar sesión</span>
+                    <span class="link-text">Cerrar sesión</span>
+                    <span class="tooltip-text">Cerrar sesión</span>
                 </a>
             </div>
-
         </aside>
 
-        <!-- Contenido dinámico -->
         <main class="main-content">
             {% block content %}
             {% endblock %}
@@ -74,5 +79,21 @@
     <script>
         lucide.createIcons();
     </script>
+    <script>
+        const sidebar = document.getElementById("sidebar");
+        let timeout;
+
+        sidebar.addEventListener("mouseenter", () => {
+            clearTimeout(timeout);
+            sidebar.classList.add("expanded");
+        });
+
+        sidebar.addEventListener("mouseleave", () => {
+            timeout = setTimeout(() => {
+                sidebar.classList.remove("expanded");
+            }, 200); // delay suave
+        });
+    </script>
+   
 </body>
 </html>

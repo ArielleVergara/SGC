@@ -15,6 +15,7 @@ def login():
         password = request.form["password"]
 
         user = autenticar_usuario(email, password)
+        print(user)
         if user:
             session["usuario"] = user
             session["user_id"] = user["id"]

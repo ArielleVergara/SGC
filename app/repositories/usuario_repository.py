@@ -6,7 +6,7 @@ def obtener_usuario_por_email(email):
     cursor = conn.cursor()
 
     cursor.execute("""
-        SELECT id, password_hash, tienda_id, rol
+        SELECT id, password_hash, tienda_id, rol, nombre
         FROM usuarios
         WHERE email = %s AND activo = TRUE
     """, (email,))
@@ -21,7 +21,8 @@ def obtener_usuario_por_email(email):
             "id": data[0],
             "password_hash": data[1],
             "tienda_id": data[2],
-            "rol": data[3]
+            "rol": data[3],
+            "nombre": data[4]
         }
 
     return None
