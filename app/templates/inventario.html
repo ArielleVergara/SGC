@@ -1,0 +1,144 @@
+{% extends "base.html" %}
+
+{% block title %}Inventario{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/inventario.css') }}">
+{% endblock %}
+
+{% block content %}
+
+<h1>📦 Inventario</h1>
+
+<div class="card-inventario">
+
+    <div class="top-bar">
+        <button type="button" class="btn-secondary" onclick="abrirModalCategorias()">
+            + Categorías
+        </button>
+        <button type="button" class="btn-primary" onclick="abrirModal()">
+            + Agregar producto
+        </button>
+    </div>
+
+    <div class="tabla-container">
+        <table class="tabla-inventario">
+            <thead>
+                <tr>
+                    <th>Producto</th>
+                    <th>Categoría</th>
+                    <th>Precio</th>
+                    <th>Stock</th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for p in productos %}
+                <tr>
+                    <td>{{ p[1] }}</td>
+                    <td>{{ p[2] }}</td>
+                    <td>${{ p[3] }}</td>
+                    <td>
+                        <span class="stock-badge {% if p[4] < 5 %}low{% endif %}">
+                            {{ p[4] }}
+                        </span>
+                    </td>
+                    <td class="acciones">
+                        <a href="{{ url_for('inventario.editar_producto', id=p[0]) }}" class="btn-edit">
+                            Editar
+                        </a>
+                        <a href="{{ url_for('inventario.eliminar_producto', id=p[0]) }}" class="btn-delete">
+                            Eliminar
+                        </a>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    <div id="modalProducto" class="modal">
+            <div class="modal-content">
+                <h2>Agregar producto</h2>
+                <form method="POST" action="{{ url_for('inventario.agregar_producto') }}">
+                    <div class="form-group">
+                        <input type="text" name="nombre" placeholder="Nombre" required>
+
+                        <input type="number" name="precio" placeholder="Precio" required>
+
+                        <input type="number" name="stock" placeholder="Stock" required>
+
+                        <select name="categoria" required>
+                            {% for c in categorias %}
+                            <option value="{{ c[0] }}">{{ c[1] }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>    
+                    <div class="modal-actions">
+                        <button type="submit">Guardar</button>
+                        <button type="button" onclick="cerrarModal()">Cancelar</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+        <div id="modalCategorias" class="modal">
+            <div class="modal-content">
+                <h2>Categorías</h2>
+                <form method="POST" action="{{ url_for('inventario.agregar_categoria') }}">
+                    <div class="form-group">
+                        <input type="text" name="nombre" placeholder="Categoría" required>
+                    </div>
+                    <div class="form-actions">
+                        <button type="submit">Agregar</button>
+                    </div>
+                </form>
+                <hr>
+                <!-- Lista -->
+                <div class="lista-categorias">
+                    {% for c in categorias %}
+                    <div class="categoria-item">
+                        <form method="POST" action="{{ url_for('inventario.editar_categoria', id=c[0]) }}">
+                            <input type="text" name="nombre" value="{{ c[1] }}">
+                            <button type="submit">💾</button>
+                        </form>
+                        <a href="{{ url_for('inventario.eliminar_categoria', id=c[0]) }}" class="btn-delete">
+                            ✖
+                        </a>
+                    </div>
+                    {% endfor %}
+                </div>
+                <button type="button" onclick="cerrarModalCategorias()">Cerrar</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% block extra_js %}
+<script>
+function abrirModal() {
+    document.getElementById("modalProducto").classList.add("show");
+}
+function cerrarModal() {
+    document.getElementById("modalProducto").classList.remove("show");
+}
+</script>
+<script>
+const modal = document.getElementById("modalProducto");
+
+modal.addEventListener("click", function(e) {
+    if (e.target === modal) {
+        cerrarModal();
+    }
+});
+</script>
+<script>
+function abrirModalCategorias() {
+    document.getElementById("modalCategorias").classList.add("show");
+}
+
+function cerrarModalCategorias() {
+    document.getElementById("modalCategorias").classList.remove("show");
+}
+</script>
+{% endblock %}
+
+{% endblock %}

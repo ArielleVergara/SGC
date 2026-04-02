@@ -15,12 +15,8 @@ def login():
         password = request.form["password"]
 
         user = autenticar_usuario(email, password)
-        print(user)
         if user:
             session["usuario"] = user
-            session["user_id"] = user["id"]
-            session["tienda_id"] = user["tienda_id"]
-            session["rol"] = user["rol"]
             return redirect("/dashboard")
 
         flash("Credenciales incorrectas", "error")

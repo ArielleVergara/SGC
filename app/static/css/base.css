@@ -12,7 +12,6 @@ body.overlay::before {
 body {
     margin: 0;
     font-family: 'Segoe UI', sans-serif;
-
     background: linear-gradient(
         135deg,
         #C0E0C0 0%,
@@ -20,7 +19,6 @@ body {
         #FFD8C8 70%,
         #A487C3 100%
     );
-
     height: 100vh;
 }
 
@@ -29,13 +27,11 @@ h1 {
     color: #2e7d32;
 }
 
-/* Animaciones globales */
 @keyframes fadeIn {
     from { opacity: 0; transform: translateY(-10px); }
     to { opacity: 1; transform: translateY(0); }
 }
 
-/* Alertas reutilizables */
 .alert {
     padding: 10px;
     margin-bottom: 15px;
@@ -50,13 +46,11 @@ h1 {
     border: 1px solid #FFAA85;
 }
 
-/* Inputs base */
 input {
     border-radius: 8px;
     font-size: 14px;
 }
 
-/* Botones base */
 button {
     border-radius: 8px;
     font-size: 14px;
