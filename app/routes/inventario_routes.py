@@ -1,6 +1,7 @@
 from flask import Blueprint, render_template, request, redirect, session
 from app.database import get_connection
 from app.utils.auth import login_required
+from flask import jsonify
 
 inventario_bp = Blueprint("inventario", __name__)
 
@@ -11,7 +12,6 @@ def inventario():
     cur = conn.cursor()
 
     tienda_id = session["tienda_id"]
-    print(tienda_id)
 
     cur.execute("""
         SELECT p.id, p.nombre, c.nombre, v.precio, v.stock
@@ -20,13 +20,23 @@ def inventario():
         LEFT JOIN variantes_producto v ON v.producto_id = p.id
         WHERE p.tienda_id = %s AND p.activo = TRUE
     """, (tienda_id,))
-
     productos = cur.fetchall()
+
+    cur.execute("""
+        SELECT id, nombre 
+        FROM categorias 
+        WHERE tienda_id = %s AND activo = TRUE
+    """, (tienda_id,))
+    categorias = cur.fetchall()
 
     cur.close()
     conn.close()
 
-    return render_template("inventario.html", productos=productos)
+    return render_template(
+        "inventario.html",
+        productos=productos,
+        categorias=categorias
+    )
 
 @inventario_bp.route("/inventario/agregar", methods=["GET", "POST"])
 @login_required
@@ -40,6 +50,14 @@ def agregar_producto():
         precio = request.form["precio"]
         stock = request.form["stock"]
         tienda_id = session["tienda_id"]
+        atributo_1 = request.form.get("atributo_1")
+        atributo_2 = request.form.get("atributo_2")
+
+        if not atributo_1:
+            atributo_1 = None
+
+        if not atributo_2:
+            atributo_2 = None
 
         cur.execute("""
             INSERT INTO productos (tienda_id, categoria_id, nombre)
@@ -50,17 +68,17 @@ def agregar_producto():
         producto_id = cur.fetchone()[0]
 
         cur.execute("""
-            INSERT INTO variantes_producto (producto_id, sku, precio, stock)
-            VALUES (%s, %s, %s, %s)
-        """, (producto_id, f"SKU-{producto_id}", precio, stock))
+            INSERT INTO variantes_producto (producto_id, sku, atributo_1, atributo_2, precio, stock)
+            VALUES (%s, %s, %s, %s, %s, %s)
+        """, (producto_id, f"SKU-{producto_id}", atributo_1, atributo_2, precio, stock))
 
         conn.commit()
         return redirect("/inventario")
 
-    cur.execute("SELECT id, nombre FROM categorias WHERE tienda_id = %s", (session["tienda_id"],))
+    cur.execute("SELECT id, nombre FROM categorias WHERE tienda_id = %s AND activo = TRUE", (session["tienda_id"],))
     categorias = cur.fetchall()
 
-    return render_template("inventario.html", categorias=categorias)
+    return redirect("/inventario")
 
 @inventario_bp.route("/inventario/editar/<int:id>", methods=["GET", "POST"])
 @login_required
@@ -115,14 +133,36 @@ def agregar_categoria():
     tienda_id = session["usuario"]["tienda_id"]
 
     cur.execute("""
-        INSERT INTO categorias (tienda_id, nombre)
-        VALUES (%s, %s)
+        SELECT id, activo FROM categorias
+        WHERE tienda_id = %s AND nombre = %s
     """, (tienda_id, nombre))
+    existente = cur.fetchone()
 
+    if existente:
+        categoria_id = existente[0]
+
+        if not existente[1]:
+            cur.execute("""
+                UPDATE categorias 
+                SET activo = TRUE 
+                WHERE id = %s
+            """, (categoria_id,))
+    else:
+        cur.execute("""
+            INSERT INTO categorias (tienda_id, nombre)
+            VALUES (%s, %s)
+            RETURNING id
+        """, (tienda_id, nombre))
+
+        categoria_id = cur.fetchone()[0]
     conn.commit()
-    return redirect("/inventario")
+    return jsonify({
+        "id": categoria_id,
+        "nombre": nombre
+    })
 
 @inventario_bp.route("/categorias/editar/<int:id>", methods=["POST"])
+@login_required
 def editar_categoria(id):
     conn = get_connection()
     cur = conn.cursor()
@@ -134,9 +174,10 @@ def editar_categoria(id):
     """, (nombre, id))
 
     conn.commit()
-    return redirect("/inventario")
+    return jsonify({"success": True})
 
 @inventario_bp.route("/categorias/eliminar/<int:id>")
+@login_required
 def eliminar_categoria(id):
     conn = get_connection()
     cur = conn.cursor()
@@ -146,4 +187,7 @@ def eliminar_categoria(id):
     """, (id,))
 
     conn.commit()
-    return redirect("/inventario")
+
+    return jsonify({
+        "success": True
+    })

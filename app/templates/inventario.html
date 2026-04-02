@@ -59,20 +59,45 @@
     <div id="modalProducto" class="modal">
             <div class="modal-content">
                 <h2>Agregar producto</h2>
-                <form method="POST" action="{{ url_for('inventario.agregar_producto') }}">
-                    <div class="form-group">
-                        <input type="text" name="nombre" placeholder="Nombre" required>
+                <form id="formAgregarProducto" method="POST" action="{{ url_for('inventario.agregar_producto') }}">
+                    <!-- PRODUCTO -->
+                    <div class="form-section">
+                        <h3>Producto</h3>
 
-                        <input type="number" name="precio" placeholder="Precio" required>
+                        <div class="form-group">
+                            <label>Nombre</label>
+                            <input type="text" name="nombre" required>
+                        </div>
 
-                        <input type="number" name="stock" placeholder="Stock" required>
-
-                        <select name="categoria" required>
-                            {% for c in categorias %}
-                            <option value="{{ c[0] }}">{{ c[1] }}</option>
-                            {% endfor %}
-                        </select>
-                    </div>    
+                        <div class="form-group">
+                            <label>Categoría</label>
+                            <select name="categoria" required>
+                                {% for c in categorias %}
+                                <option value="{{ c[0] }}">{{ c[1] }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                    </div>
+                    <!-- VARIANTE -->
+                    <div class="form-section">
+                        <h3>Variante</h3>
+                        <div class="form-group">
+                            <label>Tamaño</label>
+                            <input type="text" name="atributo_1" placeholder="Ej: Pequeña">
+                        </div>
+                        <div class="form-group">
+                            <label>Color</label>
+                            <input type="text" name="atributo_2" placeholder="Ej: Verde">
+                        </div>
+                        <div class="form-group">
+                            <label>Precio</label>
+                            <input type="number" name="precio" required>
+                        </div>
+                        <div class="form-group">
+                            <label>Stock</label>
+                            <input type="number" name="stock" required>
+                        </div>
+                    </div>
                     <div class="modal-actions">
                         <button type="submit">Guardar</button>
                         <button type="button" onclick="cerrarModal()">Cancelar</button>
@@ -83,7 +108,7 @@
         <div id="modalCategorias" class="modal">
             <div class="modal-content">
                 <h2>Categorías</h2>
-                <form method="POST" action="{{ url_for('inventario.agregar_categoria') }}">
+                <form id="formAgregarCategoria" action="/categorias/agregar" method="POST">
                     <div class="form-group">
                         <input type="text" name="nombre" placeholder="Categoría" required>
                     </div>
@@ -94,17 +119,27 @@
                 <hr>
                 <!-- Lista -->
                 <div class="lista-categorias">
-                    {% for c in categorias %}
-                    <div class="categoria-item">
-                        <form method="POST" action="{{ url_for('inventario.editar_categoria', id=c[0]) }}">
-                            <input type="text" name="nombre" value="{{ c[1] }}">
-                            <button type="submit">💾</button>
-                        </form>
-                        <a href="{{ url_for('inventario.eliminar_categoria', id=c[0]) }}" class="btn-delete">
-                            ✖
-                        </a>
+                    <div class="form-group">
+                        <label>Editar</label>
+                        <select id="selectCategoria" onchange="cargarCategoria()">
+                            <option value="">-- Selecciona --</option>
+                            {% for c in categorias %}
+                            <option value="{{ c[0] }}" data-nombre="{{ c[1] }}">
+                                {{ c[1] }}
+                            </option>
+                            {% endfor %}
+                        </select>
                     </div>
-                    {% endfor %}
+
+                    <div id="editorCategoria" class="editor-categoria" style="display: none;">
+                        <form id="formEditarCategoria" method="POST">
+                            <input type="text" name="nombre" id="inputCategoria" class="input-editable">
+                            <div class="acciones-inline">
+                                <button type="submit">💾</button>
+                                <button type="button" class="btn-delete" onclick="eliminarCategoria()">✖</button>
+                            </div>
+                        </form>
+                    </div>
                 </div>
                 <button type="button" onclick="cerrarModalCategorias()">Cerrar</button>
             </div>
@@ -138,6 +173,135 @@ function abrirModalCategorias() {
 function cerrarModalCategorias() {
     document.getElementById("modalCategorias").classList.remove("show");
 }
+</script>
+
+<script>
+function cargarCategoria() {
+    const select = document.getElementById("selectCategoria");
+    const selected = select.options[select.selectedIndex];
+
+    const id = selected.value;
+    const nombre = selected.getAttribute("data-nombre");
+
+    const editor = document.getElementById("editorCategoria");
+    const input = document.getElementById("inputCategoria");
+    const form = document.getElementById("formEditarCategoria");
+
+    if (!id) {
+        editor.style.display = "none";
+        return;
+    }
+
+    editor.style.display = "block";
+
+    input.value = nombre;
+
+    form.action = `/categorias/editar/${id}`;
+
+    editor.setAttribute("data-id", id);
+}
+
+async function eliminarCategoria() {
+    const editor = document.getElementById("editorCategoria");
+    const id = editor.getAttribute("data-id");
+
+    if (!confirm("¿Eliminar esta categoría?")) return;
+
+    const response = await fetch(`/categorias/eliminar/${id}`);
+    const data = await response.json();
+
+    if (data.success) {
+        const select = document.getElementById("selectCategoria");
+
+        for (let option of select.options) {
+            if (option.value == id) {
+                option.remove();
+                break;
+            }
+        }
+
+        select.value = "";
+        editor.style.display = "none";
+    }
+}
+</script>
+<script>
+document.addEventListener("DOMContentLoaded", () => {
+
+    const formAgregar = document.getElementById("formAgregarCategoria");
+
+    if (formAgregar) {
+        formAgregar.addEventListener("submit", async function(e) {
+            e.preventDefault();
+
+            const formData = new FormData(formAgregar);
+
+            const response = await fetch("/categorias/agregar", {
+                method: "POST",
+                body: formData
+            });
+
+            const data = await response.json();
+
+            const select = document.getElementById("selectCategoria");
+
+            let existe = false;
+            for (let option of select.options) {
+                if (option.value == data.id) {
+                    existe = true;
+                    break;
+                }
+            }
+
+            if (!existe) {
+                const option = document.createElement("option");
+                option.value = data.id;
+                option.textContent = data.nombre;
+                option.setAttribute("data-nombre", data.nombre);
+
+                select.appendChild(option);
+            }
+
+            select.value = data.id;
+            cargarCategoria();
+
+            formAgregar.reset();
+        });
+    }
+
+    const formEditar = document.getElementById("formEditarCategoria");
+
+    if (formEditar) {
+        formEditar.addEventListener("submit", async function(e) {
+            e.preventDefault();
+
+            const editor = document.getElementById("editorCategoria");
+            const id = editor.getAttribute("data-id");
+
+            const formData = new FormData(formEditar);
+
+            const response = await fetch(`/categorias/editar/${id}`, {
+                method: "POST",
+                body: formData
+            });
+
+            const data = await response.json();
+
+            if (data.success) {
+                const nuevoNombre = formData.get("nombre");
+                const select = document.getElementById("selectCategoria");
+
+                for (let option of select.options) {
+                    if (option.value == id) {
+                        option.textContent = nuevoNombre;
+                        option.setAttribute("data-nombre", nuevoNombre);
+                        break;
+                    }
+                }
+            }
+        });
+    }
+});
 </script>
 {% endblock %}
 

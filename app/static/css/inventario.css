@@ -213,6 +213,23 @@ button:hover,
     margin-top: 10px;
 }
 
+.form-section {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+
+    padding: 12px;
+    border-radius: 12px;
+
+    background: rgba(255,255,255,0.4);
+}
+
+.form-section h3 {
+    margin: 0;
+    font-size: 14px;
+    color: #2e7d32;
+}
+
 .lista-categorias {
     display: flex;
     flex-direction: column;
@@ -234,4 +251,37 @@ button:hover,
 
 .categoria-item input {
     flex: 1;
+}
+
+#editorCategoria {
+    margin-top: 15px;
+}
+
+.editor-categoria {
+    margin-top: 10px;
+    display: flex;
+    gap: 8px;
+    align-items: center;
+}
+
+.input-editable {
+    flex: 1;
+    padding: 8px;
+    border-radius: 8px;
+
+    border: 1px solid rgba(0,0,0,0.1);
+    background: rgba(255,255,255,0.6);
+
+    font-size: 14px;
+}
+
+.input-editable:focus {
+    outline: none;
+    border-color: #2e7d32;
+    background: rgba(255,255,255,0.9);
+}
+
+.acciones-inline {
+    display: flex;
+    gap: 6px;
 }
