@@ -11,14 +11,26 @@
 <h1>📦 Inventario</h1>
 
 <div class="card-inventario">
-
     <div class="top-bar">
-        <button type="button" class="btn-secondary" onclick="abrirModalCategorias()">
-            + Categorías
-        </button>
-        <button type="button" class="btn-primary" onclick="abrirModal()">
-            + Agregar producto
-        </button>
+        <div class="search-bar">
+            <div class="search-input">
+                <span class="icon">🔍</span>
+                <input 
+                    type="text" 
+                    id="busquedaProducto" 
+                    placeholder="Buscar producto..."
+                >
+            </div>
+        </div>
+
+        <div class="acciones-top">
+            <button type="button" class="btn-secondary" onclick="abrirModalCategorias()">
+                + Categorías
+            </button>
+            <button type="button" class="btn-primary" onclick="abrirModal()">
+                + Agregar producto
+            </button>
+        </div>
     </div>
 
     <div class="tabla-container">
@@ -57,18 +69,16 @@
         </table>
     </div>
     <div id="modalProducto" class="modal">
-            <div class="modal-content">
+            <div class="modal-content modal-producto">
                 <h2>Agregar producto</h2>
                 <form id="formAgregarProducto" method="POST" action="{{ url_for('inventario.agregar_producto') }}">
                     <!-- PRODUCTO -->
-                    <div class="form-section">
+                    <div class="form-section grid-2">
                         <h3>Producto</h3>
-
                         <div class="form-group">
                             <label>Nombre</label>
                             <input type="text" name="nombre" required>
                         </div>
-
                         <div class="form-group">
                             <label>Categoría</label>
                             <select name="categoria" required>
@@ -79,7 +89,7 @@
                         </div>
                     </div>
                     <!-- VARIANTE -->
-                    <div class="form-section">
+                    <div class="form-section grid-2">
                         <h3>Variante</h3>
                         <div class="form-group">
                             <label>Tamaño</label>
@@ -106,11 +116,11 @@
             </div>
         </div>
         <div id="modalCategorias" class="modal">
-            <div class="modal-content">
+            <div class="modal-content modal-categoria">
                 <h2>Categorías</h2>
                 <form id="formAgregarCategoria" action="/categorias/agregar" method="POST">
                     <div class="form-group">
-                        <input type="text" name="nombre" placeholder="Categoría" required>
+                        <input type="text" name="nombre" placeholder="Categoría" required pattern="[A-Za-zÁÉÍÓÚáéíóúñÑ ]+" title="Solo letras y espacios">
                     </div>
                     <div class="form-actions">
                         <button type="submit">Agregar</button>
@@ -301,6 +311,27 @@ document.addEventListener("DOMContentLoaded", () => {
             }
         });
     }
+});
+</script>
+<script>
+document.addEventListener("DOMContentLoaded", () => {
+    const input = document.getElementById("busquedaProducto");
+    const filas = document.querySelectorAll(".tabla-inventario tbody tr");
+
+    input.addEventListener("keyup", () => {
+        const texto = input.value.toLowerCase();
+
+        filas.forEach(fila => {
+            const nombreProducto = fila.children[0].textContent.toLowerCase();
+            const categoria = fila.children[1].textContent.toLowerCase();
+
+            if (nombreProducto.includes(texto) || categoria.includes(texto)) {
+                fila.style.display = "";
+            } else {
+                fila.style.display = "none";
+            }
+        });
+    });
 });
 </script>
 {% endblock %}

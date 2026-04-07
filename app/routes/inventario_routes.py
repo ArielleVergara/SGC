@@ -2,6 +2,7 @@ from flask import Blueprint, render_template, request, redirect, session
 from app.database import get_connection
 from app.utils.auth import login_required
 from flask import jsonify
+import re
 
 inventario_bp = Blueprint("inventario", __name__)
 
@@ -129,12 +130,17 @@ def agregar_categoria():
     conn = get_connection()
     cur = conn.cursor()
 
-    nombre = request.form["nombre"]
+    nombre = request.form["nombre"].strip()
     tienda_id = session["usuario"]["tienda_id"]
 
+    if not re.match(r'^[A-Za-zÁÉÍÓÚáéíóúñÑ ]+$', nombre):
+        return jsonify({"error": "Nombre inválido"}), 400
+
+    nombre = nombre.title()
+    
     cur.execute("""
         SELECT id, activo FROM categorias
-        WHERE tienda_id = %s AND nombre = %s
+        WHERE tienda_id = %s AND LOWER(nombre) = LOWER(%s)
     """, (tienda_id, nombre))
     existente = cur.fetchone()
 
